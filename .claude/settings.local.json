@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(timeout 5 npm start)",
+      "Bash(node server.js)",
+      "Bash(curl -s -X POST http://localhost:5000/analyze -H \"Content-Type: application/json\" -d '{}')",
+      "Bash(kill %1)",
+      "Bash(cd \"c:/Users/Admin\" && find . -maxdepth 4 -iname \"*.json\" -not -path \"*/node_modules/*\" -not -path \"*/.git/*\" 2>/dev/null | grep -v \"package\" | head -50)",
+      "Read(//c/Users/Admin/**)",
+      "Bash(node report/buildReport.js)",
+      "Bash(node ai/geminiClient.js)",
+      "Bash(node -e ' *)",
+      "Bash(cat)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //PID 24580 //F)",
+      "Bash(taskkill //PID 12084 //F)",
+      "Bash(taskkill //PID 7292 //F)",
+      "Bash(curl -s -X POST \"http://localhost:5000/analyze?mode=quick\" -H \"Content-Type: application/json\" --data-binary @sample_payload.json -o quick_response.json -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s -X POST \"http://localhost:5000/analyze\" -H \"Content-Type: application/json\" --data-binary @sample_payload.json -o comprehensive_response.json -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(taskkill //PID 12588 //F)",
+      "Bash(curl -s -X POST \"http://localhost:5000/analyze\" -H \"Content-Type: application/json\" --data-binary @sample_payload.json -o retest_response.json -w \"HTTP %{http_code}\\\\n\")"
+    ]
+  }
+}
