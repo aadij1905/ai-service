@@ -102,6 +102,26 @@ function buildPerformanceReport(normalized) {
     .sort((a, b) => b.sessions - a.sessions);
 }
 
+// Crawler-derived signals per page. Only emitted for pages the crawler
+// actually visited (crawlerEnriched === true) — otherwise the LLM must not
+// see values that were never measured. Screenshots are intentionally left on
+// disk in the analytics service and NOT sent to the model (they'd cost real
+// tokens and most of our providers are text-only).
+function buildLayoutReport(normalized) {
+  return (normalized.pages || [])
+    .filter((p) => p.crawlerEnriched)
+    .map((p) => ({
+      path: p.path,
+      sessions: p.sessions,
+      ctaText: p.ctaText,
+      ctaAboveFoldDesktop: p.ctaAboveFoldDesktop,
+      ctaAboveFoldMobile: p.ctaAboveFoldMobile,
+      hasSocialProof: p.hasSocialProof,
+      scrollDepth: p.scrollDepth,
+    }))
+    .sort((a, b) => b.sessions - a.sessions);
+}
+
 function buildReport(normalized) {
   return {
     overview: buildOverview(normalized),
@@ -109,6 +129,7 @@ function buildReport(normalized) {
     traffic: buildTrafficReport(normalized),
     devices: buildDeviceReport(normalized),
     performance: buildPerformanceReport(normalized),
+    layout: buildLayoutReport(normalized),
   };
 }
 

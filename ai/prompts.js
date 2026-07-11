@@ -36,6 +36,12 @@ REAL (measured, use freely, confidence can be "high"):
   (LCP good ≤2500ms, needs_improvement ≤4000ms, poor >4000ms)
   (CLS good ≤0.1, needs_improvement ≤0.25, poor >0.25)
   (INP good ≤200ms, needs_improvement ≤500ms, poor >500ms)
+- layout[] — crawler-visited pages ONLY. Each entry has:
+  ctaText, ctaAboveFoldDesktop (bool), ctaAboveFoldMobile (bool),
+  hasSocialProof (bool), scrollDepth (0-1 estimate).
+  Present only when the crawler ran; absent when it did not.
+  Screenshots exist on the server but are NOT provided in this prompt —
+  do not reference or describe any screenshot content.
 
 NOT AVAILABLE (null, do not cite or infer):
 - devices[].conversionRate — NOT in ShopifyQL device grouping
