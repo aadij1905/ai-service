@@ -4,6 +4,7 @@ const { callLLM } = require("./llm");
 const { orchestrateSuggestions } = require("./orchestrate");
 const { buildSuggestionsPrompt } = require("./prompts");
 const { generateMockSuggestions } = require("./mockSuggestions");
+const { detectVisualFlaws } = require("./visualDetectors");
 
 function splitItems(items) {
   const problems = items.map((item) => ({
@@ -54,19 +55,25 @@ async function generateReport({ normalized, flags = [], crawlerRan = false, mode
     };
   }
 
+  // Ground flaw detection in real screenshots where the crawler ran. This is
+  // best-effort (empty array on any failure) so it never blocks a report.
+  const visualFlags = crawlerRan ? await detectVisualFlaws(normalized) : [];
+  const allFlags = [...flags, ...visualFlags];
+  console.log(`[generateReport] ${flags.length} rule-based flags + ${visualFlags.length} visual flags`);
+
   const maxTokens = mode === "quick" ? 4000 : 7000;
 
   let content, meta;
   if ((process.env.AI_PROVIDER || "").toLowerCase() === "orchestrate") {
     ({ content, meta } = await orchestrateSuggestions({
       report,
-      flags,
+      flags: allFlags,
       crawlerRan,
       mode,
       maxTokens,
     }));
   } else {
-    const prompt = buildSuggestionsPrompt(report, flags, crawlerRan, mode);
+    const prompt = buildSuggestionsPrompt(report, allFlags, crawlerRan, mode);
     ({ content, meta } = await callLLM(prompt, maxTokens));
   }
 

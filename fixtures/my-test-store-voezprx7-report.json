@@ -1,0 +1,272 @@
+{
+  "storeId": "my-test-store-voezprx7.myshopify.com",
+  "dataSource": "shopify",
+  "ingestedAt": "2026-07-12T22:26:21.575Z",
+  "crawlerRan": true,
+  "normalized": {
+    "period": "7d",
+    "fetchedAt": "2026-07-12T22:26:00.854Z",
+    "dataSource": "shopify",
+    "websiteUrl": "https://my-test-store-voezprx7.myshopify.com",
+    "overview": {
+      "totalSessions": 88,
+      "totalRevenue": 23949.6,
+      "totalOrders": 12,
+      "avgOrderValue": 1995.8,
+      "conversionRate": 0.1364,
+      "bounceRate": 0.6932,
+      "cartAbandonmentRate": 0.4429
+    },
+    "dailyOverview": [
+      {
+        "day": "2026-07-05",
+        "sessions": 0,
+        "conversionRate": null,
+        "bounceRate": null
+      },
+      {
+        "day": "2026-07-06",
+        "sessions": 0,
+        "conversionRate": null,
+        "bounceRate": null
+      },
+      {
+        "day": "2026-07-07",
+        "sessions": 0,
+        "conversionRate": null,
+        "bounceRate": null
+      },
+      {
+        "day": "2026-07-08",
+        "sessions": 0,
+        "conversionRate": null,
+        "bounceRate": null
+      },
+      {
+        "day": "2026-07-09",
+        "sessions": 0,
+        "conversionRate": null,
+        "bounceRate": null
+      },
+      {
+        "day": "2026-07-10",
+        "sessions": 5,
+        "conversionRate": 0,
+        "bounceRate": 1
+      },
+      {
+        "day": "2026-07-11",
+        "sessions": 37,
+        "conversionRate": 0.0541,
+        "bounceRate": 0.8649
+      },
+      {
+        "day": "2026-07-12",
+        "sessions": 46,
+        "conversionRate": 0.2174,
+        "bounceRate": 0.5217
+      }
+    ],
+    "dailySales": [
+      {
+        "day": "2026-07-11",
+        "sales": 4200.7,
+        "orders": 2,
+        "aov": 2100.35
+      },
+      {
+        "day": "2026-07-12",
+        "sales": 19748.9,
+        "orders": 10,
+        "aov": 1974.89
+      }
+    ],
+    "funnel": {
+      "sessions": 88,
+      "sessionsWithCartAdditions": 22,
+      "sessionsThatReachedCheckout": 19,
+      "sessionsThatCompletedCheckout": 12,
+      "conversionRate": 0.1364,
+      "cartAdditionRate": 0.25,
+      "checkoutReachRate": 0.8636,
+      "checkoutCompletionRate": 0.6316,
+      "dailyFunnel": [
+        {
+          "day": "2026-07-05",
+          "sessions": 0,
+          "cartAdditions": 0,
+          "reachedCheckout": 0,
+          "completedCheckout": 0
+        },
+        {
+          "day": "2026-07-06",
+          "sessions": 0,
+          "cartAdditions": 0,
+          "reachedCheckout": 0,
+          "completedCheckout": 0
+        },
+        {
+          "day": "2026-07-07",
+          "sessions": 0,
+          "cartAdditions": 0,
+          "reachedCheckout": 0,
+          "completedCheckout": 0
+        },
+        {
+          "day": "2026-07-08",
+          "sessions": 0,
+          "cartAdditions": 0,
+          "reachedCheckout": 0,
+          "completedCheckout": 0
+        },
+        {
+          "day": "2026-07-09",
+          "sessions": 0,
+          "cartAdditions": 0,
+          "reachedCheckout": 0,
+          "completedCheckout": 0
+        },
+        {
+          "day": "2026-07-10",
+          "sessions": 5,
+          "cartAdditions": 0,
+          "reachedCheckout": 0,
+          "completedCheckout": 0
+        },
+        {
+          "day": "2026-07-11",
+          "sessions": 37,
+          "cartAdditions": 5,
+          "reachedCheckout": 5,
+          "completedCheckout": 2
+        },
+        {
+          "day": "2026-07-12",
+          "sessions": 46,
+          "cartAdditions": 17,
+          "reachedCheckout": 14,
+          "completedCheckout": 10
+        }
+      ]
+    },
+    "traffic": [
+      {
+        "source": "direct",
+        "sessions": 87,
+        "conversionRate": 0.1379,
+        "bounceRate": 0.7011
+      },
+      {
+        "source": "unknown",
+        "sessions": 1,
+        "conversionRate": 0,
+        "bounceRate": 0
+      }
+    ],
+    "devices": {
+      "desktop": {
+        "sessions": 71,
+        "onlineStoreVisitors": 67,
+        "percentage": 0.8068,
+        "conversionRate": null,
+        "bounceRate": null,
+        "requiresAdditionalQuery": true
+      },
+      "mobile": {
+        "sessions": 17,
+        "onlineStoreVisitors": 10,
+        "percentage": 0.1932,
+        "conversionRate": null,
+        "bounceRate": null,
+        "requiresAdditionalQuery": true
+      }
+    },
+    "pages": [
+      {
+        "path": "/",
+        "sessions": 78,
+        "conversionRate": 0.0897,
+        "bounceRate": 0.7821,
+        "lcp_p75_ms": null,
+        "p75_cls": null,
+        "inp_p75_ms": null,
+        "lcpStatus": null,
+        "clsStatus": null,
+        "inpStatus": null,
+        "ctaText": "Choose options",
+        "ctaAboveFoldDesktop": false,
+        "ctaAboveFoldMobile": false,
+        "hasSocialProof": false,
+        "scrollDepth": 0.14227280810955006,
+        "screenshotUrl": "http://localhost:4000/screenshots/1783895170096-desktop.jpg",
+        "mobileScreenshotUrl": "http://localhost:4000/screenshots/1783895170096-mobile.jpg",
+        "crawlerEnriched": true,
+        "template": "home"
+      },
+      {
+        "path": "/collections/all",
+        "sessions": 8,
+        "conversionRate": 0.625,
+        "bounceRate": 0,
+        "lcp_p75_ms": null,
+        "p75_cls": null,
+        "inp_p75_ms": null,
+        "lcpStatus": null,
+        "clsStatus": null,
+        "inpStatus": null,
+        "ctaText": null,
+        "ctaAboveFoldDesktop": null,
+        "ctaAboveFoldMobile": null,
+        "hasSocialProof": false,
+        "scrollDepth": 0.22522522522522523,
+        "screenshotUrl": "http://localhost:4000/screenshots/1783895172359-desktop.jpg",
+        "mobileScreenshotUrl": "http://localhost:4000/screenshots/1783895172359-mobile.jpg",
+        "crawlerEnriched": true,
+        "template": "collection"
+      },
+      {
+        "path": "/products_preview",
+        "sessions": 1,
+        "conversionRate": 0,
+        "bounceRate": 0,
+        "lcp_p75_ms": null,
+        "p75_cls": null,
+        "inp_p75_ms": null,
+        "lcpStatus": null,
+        "clsStatus": null,
+        "inpStatus": null,
+        "ctaText": null,
+        "ctaAboveFoldDesktop": null,
+        "ctaAboveFoldMobile": null,
+        "hasSocialProof": false,
+        "scrollDepth": 0.9685230024213075,
+        "screenshotUrl": "http://localhost:4000/screenshots/1783895174643-desktop.jpg",
+        "mobileScreenshotUrl": "http://localhost:4000/screenshots/1783895174643-mobile.jpg",
+        "crawlerEnriched": true,
+        "template": "other"
+      },
+      {
+        "path": "/checkouts/cn/hWNEOKA9YLMui2bcc3Xns7Wc/en-in",
+        "sessions": 1,
+        "conversionRate": 0,
+        "bounceRate": 0,
+        "lcp_p75_ms": null,
+        "p75_cls": null,
+        "inp_p75_ms": null,
+        "lcpStatus": null,
+        "clsStatus": null,
+        "inpStatus": null,
+        "ctaText": null,
+        "ctaAboveFoldDesktop": null,
+        "ctaAboveFoldMobile": null,
+        "hasSocialProof": false,
+        "scrollDepth": 0.6083650190114068,
+        "screenshotUrl": "http://localhost:4000/screenshots/1783895181255-desktop.jpg",
+        "mobileScreenshotUrl": "http://localhost:4000/screenshots/1783895181255-mobile.jpg",
+        "crawlerEnriched": true,
+        "template": "other"
+      }
+    ]
+  },
+  "flags": []
+}

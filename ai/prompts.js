@@ -40,8 +40,14 @@ REAL (measured, use freely, confidence can be "high"):
   ctaText, ctaAboveFoldDesktop (bool), ctaAboveFoldMobile (bool),
   hasSocialProof (bool), scrollDepth (0-1 estimate).
   Present only when the crawler ran; absent when it did not.
-  Screenshots exist on the server but are NOT provided in this prompt —
-  do not reference or describe any screenshot content.
+- VISUAL (grounded in an actual screenshot, not inferred — treat as high-
+  confidence for the specific element described):
+  Flags in DETECTED FLAGS below with type: "visual_flaw" and
+  dataQuality: "visual" come from a vision model that actually looked at a
+  real screenshot of that page. Use these as concrete, high-confidence
+  starting points for layout/contrast/CTA-visibility findings — do not
+  second-guess or contradict what the flag describes, and do not invent
+  additional visual details beyond what the flag states.
 
 NOT AVAILABLE (null, do not cite or infer):
 - devices[].conversionRate — NOT in ShopifyQL device grouping
@@ -58,7 +64,7 @@ ${crawlerContext}
 === REPORT DATA ===
 ${JSON.stringify(reportData, null, 2)}
 
-=== DETECTED FLAGS (dataQuality: "real" = directly measured) ===
+=== DETECTED FLAGS (dataQuality: "real" = directly measured from ShopifyQL, "visual" = observed by a vision model in an actual page screenshot) ===
 ${JSON.stringify(flags, null, 2)}
 
 === INSTRUCTIONS ===
@@ -72,7 +78,8 @@ ${JSON.stringify(flags, null, 2)}
 4. Every issue field must cite actual numbers from the input data.
 5. Confidence rules:
    - "high": directly supported by real ShopifyQL numbers
-             (conversion, bounce, funnel stages, CWV values)
+             (conversion, bounce, funnel stages, CWV values), OR by a
+             visual_flaw flag grounded in an actual screenshot
    - "medium": inferred from patterns, layout/CTA without crawler,
                mobile risk without per-device conversion data
    - "low": speculative recommendations
