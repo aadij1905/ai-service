@@ -67,13 +67,15 @@ Instead:
 - If the change is genuinely non-code (strategy/content), return type "manual"
   with code null and thorough instructions.
 
-Return ONLY valid JSON, no markdown fences, no prose outside the JSON:
+Return ONLY a single valid JSON object — NOT an array, NOT wrapped in a
+list, no markdown fences, no prose outside the JSON:
 {
   "type": "liquid|css|js|manual",
   "file": "the exact file key from the list above",
   "code": "ONLY the new/changed lines, complete and self-contained — a JSON-escaped string, or null for manual",
   "instructions": "numbered steps, each quoting a verbatim anchor line from the file and where the code above goes relative to it",
-  "notes": "edge cases, how to test, and how to roll back"
+  "notes": "edge cases, how to test, and how to roll back",
+  "pageImpact": "1-2 plain-English sentences: what a visitor to ${item.affectedPage} will experience differently once this patch is live. No code, no file names — this is for a PM/developer glancing at the page, not implementing it."
 }`;
   }
 
@@ -97,13 +99,15 @@ ${findingBlock}
   "notes" field MUST flag that the file/theme assumption should be verified
   against the store's actual theme before merging.
 
-Return ONLY valid JSON, no markdown fences, no prose outside the JSON:
+Return ONLY a single valid JSON object — NOT an array, NOT wrapped in a
+list, no markdown fences, no prose outside the JSON:
 {
   "type": "liquid|css|js|manual",
   "file": "path within a Dawn theme (e.g. sections/main-product.liquid)",
   "code": "the full code as a JSON-escaped string, or null for manual",
   "instructions": "exact placement/replacement steps and any schema changes",
-  "notes": "edge cases, how to test, how to roll back, and the best-effort caveat above"
+  "notes": "edge cases, how to test, how to roll back, and the best-effort caveat above",
+  "pageImpact": "1-2 plain-English sentences: what a visitor to ${item.affectedPage} will experience differently once this patch is live. No code, no file names — this is for a PM/developer glancing at the page, not implementing it."
 }`;
 }
 
@@ -129,7 +133,8 @@ non-technical reviewer can picture the before/after without reading code.
 If you cannot tell from the screenshot(s) where this element is, say so
 plainly instead of guessing.
 
-Return ONLY valid JSON, no markdown fences, no prose outside the JSON:
+Return ONLY a single valid JSON object — NOT an array, NOT wrapped in a
+list, no markdown fences, no prose outside the JSON:
 { "visualChangeNote": "1-2 sentences describing the visible before/after" }`;
 }
 

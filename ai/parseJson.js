@@ -29,4 +29,14 @@ function parseJsonLoose(text) {
   }
 }
 
-module.exports = { parseJsonLoose };
+// Some models (seen with gemini-3.1-flash-lite) occasionally wrap a
+// single-object response in a one-element array despite the prompt asking
+// for a bare object — tolerate that too, for callers that expect one object.
+function unwrapSingleObject(content) {
+  if (Array.isArray(content) && content.length === 1 && typeof content[0] === "object" && content[0] !== null) {
+    return content[0];
+  }
+  return content;
+}
+
+module.exports = { parseJsonLoose, unwrapSingleObject };

@@ -4,7 +4,12 @@ const { callLLM } = require("./llm");
 const { orchestrateSuggestions } = require("./orchestrate");
 const { buildSuggestionsPrompt } = require("./prompts");
 const { generateMockSuggestions } = require("./mockSuggestions");
-const { detectVisualFlaws } = require("./visualDetectors");
+const { callGeminiVision } = require("./geminiClient");
+const { unwrapSingleObject } = require("./parseJson");
+
+// Cap on how many crawled screenshots get attached to one suggestion-
+// generation call — bounds cost/latency on stores with many crawled pages.
+const IMAGE_CAP = 6;
 
 function splitItems(items) {
   const problems = items.map((item) => ({
@@ -55,25 +60,37 @@ async function generateReport({ normalized, flags = [], crawlerRan = false, mode
     };
   }
 
-  // Ground flaw detection in real screenshots where the crawler ran. This is
-  // best-effort (empty array on any failure) so it never blocks a report.
-  const visualFlags = crawlerRan ? await detectVisualFlaws(normalized) : [];
-  const allFlags = [...flags, ...visualFlags];
-  console.log(`[generateReport] ${flags.length} rule-based flags + ${visualFlags.length} visual flags`);
+  // When the crawler produced real screenshots, the suggestion-writing model
+  // looks at them directly (Gemini Vision) instead of reasoning over a
+  // separate text summary of what's in them — one integrated pass instead of
+  // a vision pre-pass feeding a text-only model.
+  const crawledPages = crawlerRan
+    ? (normalized.pages || []).filter((p) => p.crawlerEnriched && p.screenshotUrl).slice(0, IMAGE_CAP)
+    : [];
+  const imageUrls = crawledPages.map((p) => p.screenshotUrl);
 
   const maxTokens = mode === "quick" ? 4000 : 7000;
 
   let content, meta;
-  if ((process.env.AI_PROVIDER || "").toLowerCase() === "orchestrate") {
+  if (imageUrls.length > 0) {
+    console.log(`[generateReport] vision-integrated: ${imageUrls.length} screenshot(s) attached to suggestion generation`);
+    const prompt = buildSuggestionsPrompt(report, flags, crawlerRan, mode, {
+      imagesAttached: true,
+      pages: crawledPages,
+    });
+    const result = await callGeminiVision(prompt, imageUrls, maxTokens, "suggestions");
+    content = unwrapSingleObject(result.content);
+    meta = result.meta;
+  } else if ((process.env.AI_PROVIDER || "").toLowerCase() === "orchestrate") {
     ({ content, meta } = await orchestrateSuggestions({
       report,
-      flags: allFlags,
+      flags,
       crawlerRan,
       mode,
       maxTokens,
     }));
   } else {
-    const prompt = buildSuggestionsPrompt(report, allFlags, crawlerRan, mode);
+    const prompt = buildSuggestionsPrompt(report, flags, crawlerRan, mode);
     ({ content, meta } = await callLLM(prompt, maxTokens));
   }
 
