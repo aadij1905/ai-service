@@ -72,26 +72,70 @@ function toResult(responseText, usage, modelName, elapsed, label) {
   };
 }
 
-// pool: "code" | "suggestions" — picks which key rotation to draw from.
-// Tries each key in the pool in round-robin order, falling back to the next
-// on failure (e.g. a 429) before giving up.
-async function callGemini(prompt, maxTokens = 6000, pool = "suggestions") {
-  const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-  const keys = rotatedKeys(pool);
+// How many times to walk the whole key pool before giving up, and the base
+// backoff between passes. Gemini's free tier returns transient 503 "high
+// demand" spikes that clear in a second or two — retrying the pool (not just
+// rotating keys once) is what turns those into a brief delay instead of a
+// failed report.
+const MAX_PASSES = Number(process.env.GEMINI_MAX_RETRIES || 3);
+const BASE_BACKOFF_MS = 600;
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// The @google/generative-ai SDK embeds the HTTP status in the error message
+// (e.g. "[503 Service Unavailable] …"); err.status is not always set.
+function statusOf(err) {
+  if (typeof err?.status === "number") return err.status;
+  const m = String(err?.message || "").match(/\[(\d{3})\b/);
+  return m ? Number(m[1]) : 0;
+}
+
+// 400 (bad request / prompt too large / safety block) and 403 (invalid key,
+// permission) won't be fixed by another key or a wait — fail fast rather than
+// burning the backoff budget. Everything else (429 quota, 500/503 overload,
+// network blips) is worth the next key and, if the whole pool is down, a
+// backed-off retry.
+function isFatal(err) {
+  const s = statusOf(err);
+  return s === 400 || s === 403;
+}
+
+// Walk the pool's keys in round-robin order; on a transient failure fall back
+// to the next key. If an entire pass fails, back off (exponential + jitter)
+// and retry the pool, up to MAX_PASSES. `attempt(key)` resolves the result or
+// throws. Shared by callGemini and callGeminiVision so both get the same
+// resilience.
+async function withKeyPool(pool, label, attempt) {
+  const keys = rotatedKeys(pool);
   let lastErr;
-  for (const key of keys) {
-    const start = Date.now();
-    try {
-      const model = buildModel(clientFor(key), modelName, maxTokens, 0.3);
-      const result = await model.generateContent(prompt);
-      return toResult(result.response.text(), result.response.usageMetadata, modelName, Date.now() - start, "Gemini");
-    } catch (err) {
-      lastErr = err;
-      console.warn(`[Gemini] key failed in pool "${pool}", trying next: ${err.message}`);
+  for (let pass = 0; pass < MAX_PASSES; pass++) {
+    for (const key of keys) {
+      try {
+        return await attempt(key);
+      } catch (err) {
+        lastErr = err;
+        if (isFatal(err)) throw err;
+        console.warn(`[${label}] key failed in pool "${pool}" (pass ${pass + 1}/${MAX_PASSES}): ${err.message}`);
+      }
+    }
+    if (pass < MAX_PASSES - 1) {
+      const delay = BASE_BACKOFF_MS * 2 ** pass + Math.floor(Math.random() * 250);
+      console.warn(`[${label}] whole pool "${pool}" failed pass ${pass + 1} — backing off ${delay}ms`);
+      await sleep(delay);
     }
   }
   throw lastErr;
+}
+
+// pool: "code" | "suggestions" — picks which key rotation to draw from.
+async function callGemini(prompt, maxTokens = 6000, pool = "suggestions") {
+  const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  return withKeyPool(pool, "Gemini", async (key) => {
+    const start = Date.now();
+    const model = buildModel(clientFor(key), modelName, maxTokens, 0.3);
+    const result = await model.generateContent(prompt);
+    return toResult(result.response.text(), result.response.usageMetadata, modelName, Date.now() - start, "Gemini");
+  });
 }
 
 // Fetches a screenshot URL and returns it as a Gemini inlineData image part.
@@ -108,22 +152,13 @@ async function fetchImageAsInlineData(url) {
 // (e.g. desktop + mobile of a page) instead of text alone.
 async function callGeminiVision(prompt, imageUrls, maxTokens = 2000, pool = "suggestions") {
   const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-  const keys = rotatedKeys(pool);
   const imageParts = await Promise.all(imageUrls.map(fetchImageAsInlineData));
-
-  let lastErr;
-  for (const key of keys) {
+  return withKeyPool(pool, "Gemini Vision", async (key) => {
     const start = Date.now();
-    try {
-      const model = buildModel(clientFor(key), modelName, maxTokens, 0.2);
-      const result = await model.generateContent([prompt, ...imageParts]);
-      return toResult(result.response.text(), result.response.usageMetadata, modelName, Date.now() - start, "Gemini Vision");
-    } catch (err) {
-      lastErr = err;
-      console.warn(`[Gemini Vision] key failed in pool "${pool}", trying next: ${err.message}`);
-    }
-  }
-  throw lastErr;
+    const model = buildModel(clientFor(key), modelName, maxTokens, 0.2);
+    const result = await model.generateContent([prompt, ...imageParts]);
+    return toResult(result.response.text(), result.response.usageMetadata, modelName, Date.now() - start, "Gemini Vision");
+  });
 }
 
 module.exports = { callGemini, callGeminiVision };

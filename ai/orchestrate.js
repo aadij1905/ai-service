@@ -12,7 +12,7 @@
 
 const { getCaller } = require("./llm");
 const { buildSuggestionsPrompt } = require("./prompts");
-const { buildJudgePrompt } = require("./judgePrompt");
+const { judgeCandidates } = require("./judge");
 
 function parseList(v, fallback) {
   const list = (v || "").split(",").map((s) => s.trim()).filter(Boolean);
@@ -99,17 +99,12 @@ async function orchestrateSuggestions({ report, flags, crawlerRan, mode, maxToke
 
   // ── 3. Judge (merge / filter / re-rank) ────────────────────────────────────
   let finalItems = deduped;
-  let judgeMeta = { provider: judge };
-  try {
-    const judgePrompt = buildJudgePrompt(report, deduped, mode);
-    const jr = await getCaller(judge)(judgePrompt, maxTokens);
-    const judged = (jr.content && jr.content.items) || [];
-    if (judged.length) finalItems = judged;
-    judgeMeta = { provider: judge, count: judged.length, ...jr.meta };
-    console.log(`[orchestrate] judge ${judge}: ${judged.length} final items`);
-  } catch (err) {
-    judgeMeta = { provider: judge, error: err.message, fellBackToCandidates: true };
-    console.warn(`[orchestrate] judge ${judge} failed, using deduped candidates: ${err.message}`);
+  const judged = await judgeCandidates({ report, candidates: deduped, mode, maxTokens, judge });
+  let judgeMeta = judged.meta;
+  if (judged.items.length) {
+    finalItems = judged.items;
+  } else if (judged.meta.error) {
+    judgeMeta = { ...judged.meta, fellBackToCandidates: true };
   }
 
   // strip internal fields before returning

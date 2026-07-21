@@ -64,10 +64,11 @@ async function detectPageVisualFlaws(page) {
 // Runs vision analysis across every crawler-visited page with a screenshot,
 // in parallel. Best-effort: returns [] rather than throwing if nothing
 // qualifies, so callers never need to special-case "no crawler data".
-async function detectVisualFlaws(normalized) {
-  const pages = (normalized.pages || []).filter(
-    (p) => p.crawlerEnriched && (p.screenshotUrl || p.mobileScreenshotUrl)
-  );
+async function detectVisualFlaws(normalized, { cap = Infinity } = {}) {
+  const pages = (normalized.pages || [])
+    .filter((p) => p.crawlerEnriched && (p.screenshotUrl || p.mobileScreenshotUrl))
+    .sort((a, b) => (b.sessions || 0) - (a.sessions || 0)) // highest-traffic first
+    .slice(0, cap);
   if (pages.length === 0) return [];
 
   const results = await Promise.all(pages.map(detectPageVisualFlaws));
