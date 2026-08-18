@@ -5,33 +5,35 @@ const { generateReport } = require("../ai/generateReport");
 
 const ANALYTICS_SERVICE_URL = process.env.ANALYTICS_SERVICE_URL || "http://localhost:4000";
 
-// Full view, includes `analysis` (issue/recommendation/codePatch) for devs.
-router.get("/report", (req, res) => {
+// Looks up the saved report for req.query.storeId, sending 400/404 as
+// needed. Returns the report, or null after already sending a response.
+function loadReportOr404(req, res) {
   const { storeId } = req.query;
   if (!storeId) {
-    return res.status(400).json({ error: "storeId is required" });
+    res.status(400).json({ error: "storeId is required" });
+    return null;
   }
 
   const saved = getReport(storeId);
   if (!saved) {
-    return res.status(404).json({ error: "No report found for this storeId" });
+    res.status(404).json({ error: "No report found for this storeId" });
+    return null;
   }
 
+  return saved;
+}
+
+// Full view, includes `analysis` (issue/recommendation/codePatch) for devs.
+router.get("/report", (req, res) => {
+  const saved = loadReportOr404(req, res);
+  if (!saved) return;
   res.json(saved);
 });
 
 // PM view: same report, but with `analysis` (which carries codePatch) stripped out.
 router.get("/report/pm", (req, res) => {
-  const { storeId } = req.query;
-  if (!storeId) {
-    return res.status(400).json({ error: "storeId is required" });
-  }
-
-  const saved = getReport(storeId);
-  if (!saved) {
-    return res.status(404).json({ error: "No report found for this storeId" });
-  }
-
+  const saved = loadReportOr404(req, res);
+  if (!saved) return;
   const { analysis, ...pmView } = saved;
   res.json(pmView);
 });

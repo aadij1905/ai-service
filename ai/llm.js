@@ -12,7 +12,6 @@ const LOADERS = {
   gemini: () => require("./geminiClient").callGemini,
   mistral: () => require("./mistralClient").callMistral,
   cerebras: () => require("./cerebrasClient").callCerebras,
-  ollama: () => require("./ollamaClient").callOllama,
 };
 
 function resolveProvider() {

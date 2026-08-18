@@ -1,4 +1,8 @@
-require("dotenv").config();
+try {
+  process.loadEnvFile();
+} catch {
+  // no .env file (e.g. env vars injected directly, as on Railway) — fine
+}
 const express = require("express");
 const cors = require("cors");
 const analyzeRouter = require("./routes/analyze");

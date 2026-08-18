@@ -75,4 +75,4 @@ async function detectVisualFlaws(normalized, { cap = Infinity } = {}) {
   return results.flat();
 }
 
-module.exports = { detectVisualFlaws, detectPageVisualFlaws };
+module.exports = { detectVisualFlaws };

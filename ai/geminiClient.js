@@ -1,6 +1,7 @@
 // ai/geminiClient.js
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { parseJsonLoose } = require("./parseJson");
+const { smokeTest } = require("./smokeTest");
 
 // DEMO ONLY: rotates across multiple Gemini API keys per "pool" so
 // code-generation and suggestion-generation each draw from their own
@@ -163,23 +164,7 @@ async function callGeminiVision(prompt, imageUrls, maxTokens = 2000, pool = "sug
 
 module.exports = { callGemini, callGeminiVision };
 
-// ---------------------------------------------------------------------------
-// TEMPORARY TEST BLOCK -- isolated smoke test, remove once wired into
-// routes/analyze.js. Run with: node ai/geminiClient.js
-// ---------------------------------------------------------------------------
+// Standalone smoke test:  node ai/geminiClient.js
 if (require.main === module) {
-  require("dotenv").config();
-
-  const testPrompt = `Return ONLY valid JSON, no markdown fences, no prose, matching this exact schema:
-{ "status": "ok" }`;
-
-  callGemini(testPrompt, 100)
-    .then(({ content, meta }) => {
-      console.log("Parsed content:", content);
-      console.log("Meta:", meta);
-    })
-    .catch((err) => {
-      console.error("callGemini test failed:", err.message);
-      process.exitCode = 1;
-    });
+  smokeTest(callGemini, "callGemini");
 }
