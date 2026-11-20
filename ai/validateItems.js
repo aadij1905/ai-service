@@ -155,7 +155,12 @@ function validateItems(rawItems, { report, normalized, mode, strict } = {}) {
     }
 
     // enum coercion (repair, don't drop)
-    if (!VALID_CATEGORIES.has(item.category)) { item.category = "conversion"; stats.coercedEnums += 1; }
+    if (!VALID_CATEGORIES.has(item.category)) {
+      // small models copy the schema's "a|b|c" list; keep their first valid pick
+      const pick = String(item.category || "").split(/[|,/\s]+/).find((c) => VALID_CATEGORIES.has(c.toLowerCase()));
+      item.category = pick ? pick.toLowerCase() : "conversion";
+      stats.coercedEnums += 1;
+    }
     if (!VALID_EFFORT.has(item.effort)) { item.effort = "medium"; stats.coercedEnums += 1; }
     if (!VALID_CONFIDENCE.has(item.confidence)) { item.confidence = "medium"; stats.coercedEnums += 1; }
     if (!item.codePatch || typeof item.codePatch !== "object") {
