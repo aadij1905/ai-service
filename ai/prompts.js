@@ -1,6 +1,25 @@
 // ai/prompts.js
 
-function buildSuggestionsPrompt(reportData, flags, crawlerRan, mode, { imagesAttached = false, pages = [] } = {}) {
+// Prompting strategies (course: Prompt Engineering). PROMPT_STRATEGY env or
+// the `strategy` option picks one; output schema is identical for all three, the
+// reasoning lands in a top-level JSON field that downstream code ignores.
+const STRATEGIES = {
+  plain: "",
+  cot: `=== REASONING (Chain-of-Thought) ===
+Before writing items, think step by step in a top-level "reasoning" string:
+1) list the worst real metrics with their numbers, 2) for each, state the most
+likely cause, 3) state which page/theme change would fix it. Then write "items"
+so that every item follows from a step in your reasoning.`,
+  tot: `=== REASONING (Tree-of-Thought) ===
+Before writing items, explore in a top-level "thoughts" array. For each of the
+3 biggest problems in the data, propose 3 alternative root-cause hypotheses
+(branches), score each 1-10 on how well the numbers support it, and keep only
+the best-scoring branch: {"problem","branches":[{"hypothesis","evidence","score"}],"chosen"}.
+Build "items" only from chosen branches plus other well-supported findings.`,
+};
+
+function buildSuggestionsPrompt(reportData, flags, crawlerRan, mode, { imagesAttached = false, pages = [], strategy = process.env.PROMPT_STRATEGY || "plain" } = {}) {
+  if (!(strategy in STRATEGIES)) throw new Error(`Unknown prompt strategy "${strategy}"; use ${Object.keys(STRATEGIES).join("|")}`);
   const crawlerContext = crawlerRan
     ? "The Playwright crawler has run. CTA position, social proof, and scroll depth are available in the pages data where crawlerEnriched is true. You may use confidence: 'high' for layout and CTA findings where crawler data confirms them."
     : "The Playwright crawler has NOT run. CTA position, social proof, and scroll depth are null for all pages. Do not infer or fabricate these. For suggestions about layout or CTA placement, cap confidence at 'medium' and phrase as inferred patterns, not confirmed facts.";
@@ -68,6 +87,8 @@ exposure risk, not confirmed gap.
 
 ${crawlerContext}
 
+${STRATEGIES[strategy]}
+
 === REPORT DATA ===
 ${JSON.stringify(reportData, null, 2)}
 
@@ -129,4 +150,4 @@ Return ONLY valid JSON, no markdown fences, no prose outside the JSON:
 }`;
 }
 
-module.exports = { buildSuggestionsPrompt };
+module.exports = { buildSuggestionsPrompt, STRATEGIES: Object.keys(STRATEGIES) };

@@ -24,7 +24,9 @@ function makeOpenAICompatClient({ label, apiKeyEnv, baseURL, modelEnv, defaultMo
     const response = await openai.chat.completions.create({
       model,
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.3,
+      // Sampling knobs (course: Sampling strategies), read per call so the eval can sweep them.
+      temperature: Number(process.env.LLM_TEMPERATURE ?? 0.3),
+      top_p: Number(process.env.LLM_TOP_P ?? 1),
       max_tokens: maxTokens,
       response_format: { type: "json_object" },
     });

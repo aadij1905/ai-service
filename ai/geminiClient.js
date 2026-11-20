@@ -45,7 +45,8 @@ function buildModel(genAI, modelName, maxTokens, temperature) {
   return genAI.getGenerativeModel({
     model: modelName,
     generationConfig: {
-      temperature,
+      temperature: Number(process.env.LLM_TEMPERATURE ?? temperature),
+      topP: Number(process.env.LLM_TOP_P ?? 0.95),
       maxOutputTokens: maxTokens,
       responseMimeType: "application/json", // forces JSON output, Gemini's equivalent of json_object
       // gemini-2.5-flash spends part of maxOutputTokens on internal "thinking"

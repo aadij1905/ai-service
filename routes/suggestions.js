@@ -1,11 +1,17 @@
 const express = require("express");
+const fs = require("fs");
+const path = require("path");
 const router = express.Router();
+
+// Append-only log of PO decisions (with the full suggestion when the client
+// sends it): the labelled dataset for eval/ and finetune/.
+const DECISIONS_FILE = path.join(__dirname, "..", "data", "decisions.jsonl");
 
 // In-memory store: { [storeId]: { [suggestionId]: { action, title, respondedAt } } }
 const responses = {};
 
 router.post("/suggestions/respond", (req, res) => {
-  const { storeId, suggestionId, action, title } = req.body;
+  const { storeId, suggestionId, action, title, item } = req.body;
 
   if (!storeId || !suggestionId || !action) {
     return res.status(400).json({ error: "storeId, suggestionId, and action are required" });
@@ -20,6 +26,9 @@ router.post("/suggestions/respond", (req, res) => {
     title: title || null,
     respondedAt: new Date().toISOString(),
   };
+
+  fs.mkdirSync(path.dirname(DECISIONS_FILE), { recursive: true });
+  fs.appendFileSync(DECISIONS_FILE, JSON.stringify({ storeId, suggestionId, action, item: item || { title }, respondedAt: responses[storeId][suggestionId].respondedAt }) + "\n");
 
   res.json({
     success: true,

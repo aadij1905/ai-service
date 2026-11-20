@@ -89,7 +89,9 @@ async function generateReport({ normalized, flags = [], crawlerRan = false, mode
   // looks at them directly (Gemini Vision) instead of reasoning over a
   // separate text summary of what's in them — one integrated pass instead of
   // a vision pre-pass feeding a text-only model.
-  const crawledPages = crawlerRan
+  // VISION=off keeps the run text-only (e.g. fully local with AI_PROVIDER=ollama,
+  // since the screenshot paths need Gemini Vision).
+  const crawledPages = crawlerRan && process.env.VISION !== "off"
     ? (normalized.pages || []).filter((p) => p.crawlerEnriched && p.screenshotUrl).slice(0, IMAGE_CAP)
     : [];
   const imageUrls = crawledPages.map((p) => p.screenshotUrl);
