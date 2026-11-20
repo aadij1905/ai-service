@@ -1,6 +1,6 @@
 // ai/ollamaClient.js
 // Local model via Ollama (no API key, no network): `ollama pull llama3.2:3b`.
-// Ollama's default context is small; start it with OLLAMA_CONTEXT_LENGTH=8192
+// Ollama's default context is small; start it with OLLAMA_CONTEXT_LENGTH=16384
 // so the ~5K-token suggestions prompt isn't silently truncated.
 const { makeOpenAICompatClient } = require("./openAICompatClient");
 
