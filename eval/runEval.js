@@ -2,7 +2,7 @@
 // Offline evaluation of the suggestion generator (course: Evaluation metrics for
 // text generation, Prompt engineering, Sampling strategies).
 //
-//   node eval/runEval.js [--provider groq] [--judge groq] [--mode quick] [--fixture path]
+//   node eval/runEval.js [--provider ollama] [--judge ollama] [--judge-model qwen2.5:3b] [--mode quick] [--fixture path]
 //
 // Sweeps prompt strategy (plain | cot | tot) × sampling config on one fixture
 // store and reports, per run:
@@ -25,6 +25,10 @@ const { buildReport } = require("../report/buildReport");
 const args = Object.fromEntries(process.argv.slice(2).join(" ").split("--").filter(Boolean).map((a) => { const [k, v = true] = a.trim().split(/\s+/); return [k, v]; }));
 const provider = args.provider || process.env.EVAL_PROVIDER || "groq";
 const judgeProvider = args.judge || process.env.EVAL_JUDGE || provider;
+// Optional different model for the judge on the same provider, e.g.
+// --provider ollama --judge ollama --judge-model qwen2.5:3b (avoids self-grading).
+const judgeModel = args["judge-model"] || null;
+const judgeModelEnv = `${judgeProvider.toUpperCase()}_MODEL`;
 const mode = args.mode || "quick";
 const fixturePath = args.fixture || path.join(__dirname, "..", "fixtures", "my-test-store-voezprx7-report.json");
 const SAMPLING = [
@@ -120,7 +124,11 @@ async function main() {
         let scores = [];
         for (let attempt = 0; items.length && attempt < 3; attempt++) {
           try {
-            const jr = await judge(judgePrompt(report, items), 3000);
+            const genModel = process.env[judgeModelEnv];
+            if (judgeModel) process.env[judgeModelEnv] = judgeModel; // clients read the model per call
+            let jr;
+            try { jr = await judge(judgePrompt(report, items), 3000); }
+            finally { if (judgeModel) { if (genModel === undefined) delete process.env[judgeModelEnv]; else process.env[judgeModelEnv] = genModel; } }
             scores = (jr.content && jr.content.scores) || [];
             break;
           } catch (err) {
@@ -153,13 +161,13 @@ async function main() {
   approval.rate = approval.total ? approval.accepted / approval.total : null;
 
   const ts = new Date().toISOString().replace(/[:.]/g, "-");
-  const result = { ts, provider, judgeProvider, mode, fixture: path.basename(fixturePath), approval, runs };
+  const result = { ts, provider, judgeProvider, judgeModel, mode, fixture: path.basename(fixturePath), approval, runs };
   fs.writeFileSync(path.join(OUT, `${ts}.json`), JSON.stringify(result, null, 2));
 
   const f = (x, d = 2) => (x == null ? "–" : Number(x).toFixed(d));
   const md = [
     `# Eval ${ts}`,
-    `provider=${provider} judge=${judgeProvider} mode=${mode} fixture=${result.fixture}`,
+    `provider=${provider} judge=${judgeProvider}${judgeModel ? `(${judgeModel})` : ""} mode=${mode} fixture=${result.fixture}`,
     `PO approval rate: ${approval.total ? `${approval.accepted}/${approval.total} = ${f(approval.rate)}` : "no decisions logged yet"}`,
     "",
     "| strategy | sampling | T | top-p | valid | grounded | distinct-2 | ROUGE-L | judge (1-5) | tokens | latency ms |",
