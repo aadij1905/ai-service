@@ -120,7 +120,7 @@ async function main() {
         let scores = [];
         for (let attempt = 0; items.length && attempt < 3; attempt++) {
           try {
-            const jr = await judge(judgePrompt(report, items), 1500);
+            const jr = await judge(judgePrompt(report, items), 3000);
             scores = (jr.content && jr.content.scores) || [];
             break;
           } catch (err) {

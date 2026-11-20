@@ -35,15 +35,22 @@ def read_jsonl(p):
 
 
 def trim_report(r):
-    """Keep the prompt short: overview, funnel and the 5 highest-traffic pages."""
+    """Keep the prompt short: overview, funnel, top traffic sources and the 5
+    highest-traffic pages (buildReport keeps per-page metrics under "performance")."""
     if not r:
         return {}
-    pages = sorted(r.get("pages") or [], key=lambda p: -(p.get("sessions") or 0))[:5]
-    keep = ("path", "sessions", "conversionRate", "bounceRate", "lcp_p75_ms", "p75_cls", "inp_p75_ms")
+    # merge per-page web vitals ("performance") and crawler data ("layout") by path
+    by_path = {}
+    for p in (r.get("performance") or []) + (r.get("layout") or []) + (r.get("pages") or []):
+        by_path.setdefault(p.get("path"), {}).update(p)
+    pages = sorted(by_path.values(), key=lambda p: -(p.get("sessions") or 0))[:5]
+    keep = ("path", "sessions", "conversionRate", "bounceRate", "lcp_p75_ms", "p75_cls", "inp_p75_ms",
+            "ctaAboveFoldDesktop", "ctaAboveFoldMobile", "hasSocialProof")
     return {
         "overview": r.get("overview"),
         "funnel": r.get("funnel"),
-        "pages": [{k: p.get(k) for k in keep} for p in pages],
+        "traffic": (r.get("traffic") or [])[:3],
+        "pages": [{k: p[k] for k in keep if p.get(k) is not None} for p in pages],
     }
 
 

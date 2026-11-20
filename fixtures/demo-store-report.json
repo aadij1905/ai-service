@@ -1,0 +1,340 @@
+{
+  "storeId": "demo-store.myshopify.com",
+  "dataSource": "mock",
+  "crawlerRan": false,
+  "normalized": {
+    "period": "7d",
+    "fetchedAt": "2026-11-20T12:40:23.558Z",
+    "dataSource": "mock",
+    "websiteUrl": null,
+    "overview": {
+      "totalSessions": 11200,
+      "totalRevenue": 28400.5,
+      "totalOrders": 198,
+      "avgOrderValue": 143.43,
+      "conversionRate": 0.0177,
+      "bounceRate": 0.44,
+      "cartAbandonmentRate": 0.72,
+      "avgPageLoadTime": null
+    },
+    "dailyOverview": [
+      {
+        "day": "2026-06-22",
+        "sessions": 1500,
+        "conversionRate": 0.015,
+        "bounceRate": 0.42
+      },
+      {
+        "day": "2026-06-23",
+        "sessions": 1580,
+        "conversionRate": 0.016,
+        "bounceRate": 0.425
+      },
+      {
+        "day": "2026-06-24",
+        "sessions": 1660,
+        "conversionRate": 0.017,
+        "bounceRate": 0.43
+      },
+      {
+        "day": "2026-06-25",
+        "sessions": 1740,
+        "conversionRate": 0.018,
+        "bounceRate": 0.435
+      },
+      {
+        "day": "2026-06-26",
+        "sessions": 1820,
+        "conversionRate": 0.019,
+        "bounceRate": 0.44
+      },
+      {
+        "day": "2026-06-27",
+        "sessions": 1900,
+        "conversionRate": 0.02,
+        "bounceRate": 0.445
+      },
+      {
+        "day": "2026-06-28",
+        "sessions": 1980,
+        "conversionRate": 0.020999999999999998,
+        "bounceRate": 0.44999999999999996
+      }
+    ],
+    "dailySales": [
+      {
+        "day": "2026-06-22",
+        "sales": 4000,
+        "orders": 28,
+        "aov": 142
+      },
+      {
+        "day": "2026-06-23",
+        "sales": 3800,
+        "orders": 27,
+        "aov": 142
+      },
+      {
+        "day": "2026-06-24",
+        "sales": 3600,
+        "orders": 26,
+        "aov": 142
+      },
+      {
+        "day": "2026-06-25",
+        "sales": 3400,
+        "orders": 25,
+        "aov": 142
+      },
+      {
+        "day": "2026-06-26",
+        "sales": 3200,
+        "orders": 24,
+        "aov": 142
+      },
+      {
+        "day": "2026-06-27",
+        "sales": 3000,
+        "orders": 23,
+        "aov": 142
+      },
+      {
+        "day": "2026-06-28",
+        "sales": 2800,
+        "orders": 22,
+        "aov": 142
+      }
+    ],
+    "funnel": {
+      "sessions": 11200,
+      "sessionsWithCartAdditions": 2240,
+      "sessionsThatReachedCheckout": 896,
+      "sessionsThatCompletedCheckout": 198,
+      "conversionRate": 0.0177,
+      "cartAdditionRate": 0.2,
+      "checkoutReachRate": 0.4,
+      "checkoutCompletionRate": 0.22,
+      "dailyFunnel": []
+    },
+    "traffic": [
+      {
+        "source": "organic",
+        "sessions": 3920,
+        "conversionRate": 0.021,
+        "bounceRate": 0.35
+      },
+      {
+        "source": "social",
+        "sessions": 2912,
+        "conversionRate": 0.012,
+        "bounceRate": 0.58
+      },
+      {
+        "source": "direct",
+        "sessions": 2240,
+        "conversionRate": 0.019,
+        "bounceRate": 0.41
+      },
+      {
+        "source": "paid",
+        "sessions": 1344,
+        "conversionRate": 0.008,
+        "bounceRate": 0.71
+      },
+      {
+        "source": "referral",
+        "sessions": 784,
+        "conversionRate": 0.023,
+        "bounceRate": 0.31
+      }
+    ],
+    "devices": {
+      "mobile": {
+        "sessions": 7840,
+        "onlineStoreVisitors": 7200,
+        "percentage": 0.7,
+        "conversionRate": null,
+        "bounceRate": null,
+        "avgPageLoadTime": null,
+        "requiresAdditionalQuery": true
+      },
+      "desktop": {
+        "sessions": 2912,
+        "onlineStoreVisitors": 2800,
+        "percentage": 0.26,
+        "conversionRate": null,
+        "bounceRate": null,
+        "avgPageLoadTime": null,
+        "requiresAdditionalQuery": true
+      },
+      "tablet": {
+        "sessions": 448,
+        "onlineStoreVisitors": 420,
+        "percentage": 0.04,
+        "conversionRate": null,
+        "bounceRate": null,
+        "avgPageLoadTime": null,
+        "requiresAdditionalQuery": true
+      }
+    },
+    "pages": [
+      {
+        "path": "/",
+        "sessions": 3850,
+        "conversionRate": 0.018,
+        "bounceRate": 0.38,
+        "lcp_p75_ms": 2800,
+        "p75_cls": 0.12,
+        "inp_p75_ms": 210,
+        "lcpStatus": "needs_improvement",
+        "clsStatus": "needs_improvement",
+        "inpStatus": "needs_improvement",
+        "ctaText": null,
+        "ctaAboveFoldDesktop": null,
+        "ctaAboveFoldMobile": null,
+        "hasSocialProof": null,
+        "scrollDepth": null,
+        "screenshotUrl": null,
+        "mobileScreenshotUrl": null,
+        "crawlerEnriched": false
+      },
+      {
+        "path": "/products/wireless-earbuds-pro",
+        "sessions": 740,
+        "conversionRate": 0.008,
+        "bounceRate": 0.62,
+        "lcp_p75_ms": 4500,
+        "p75_cls": 0.05,
+        "inp_p75_ms": 180,
+        "lcpStatus": "poor",
+        "clsStatus": "good",
+        "inpStatus": "good",
+        "ctaText": null,
+        "ctaAboveFoldDesktop": null,
+        "ctaAboveFoldMobile": null,
+        "hasSocialProof": null,
+        "scrollDepth": null,
+        "screenshotUrl": null,
+        "mobileScreenshotUrl": null,
+        "crawlerEnriched": false
+      },
+      {
+        "path": "/collections/all",
+        "sessions": 620,
+        "conversionRate": 0.005,
+        "bounceRate": 0.55,
+        "lcp_p75_ms": 3100,
+        "p75_cls": 0.08,
+        "inp_p75_ms": 160,
+        "lcpStatus": "needs_improvement",
+        "clsStatus": "good",
+        "inpStatus": "good",
+        "ctaText": null,
+        "ctaAboveFoldDesktop": null,
+        "ctaAboveFoldMobile": null,
+        "hasSocialProof": null,
+        "scrollDepth": null,
+        "screenshotUrl": null,
+        "mobileScreenshotUrl": null,
+        "crawlerEnriched": false
+      }
+    ]
+  },
+  "flags": [
+    {
+      "type": "revenue_decline",
+      "changePercent": -18.42,
+      "severity": 3,
+      "dataQuality": "real",
+      "impactScore": 33600
+    },
+    {
+      "type": "poor_lcp",
+      "path": "/products/wireless-earbuds-pro",
+      "value": 4500,
+      "sessions": 740,
+      "severity": 3,
+      "dataQuality": "real",
+      "note": "LCP > 4000ms. Google threshold: good \u2264 2500ms.",
+      "coOccurringOnPage": [
+        "high_bounce_page",
+        "low_conversion_page"
+      ],
+      "impactScore": 2220
+    },
+    {
+      "type": "high_cart_abandonment",
+      "value": 0.72,
+      "severity": 2,
+      "dataQuality": "real",
+      "impactScore": 22400
+    },
+    {
+      "type": "lcp_needs_improvement",
+      "path": "/",
+      "value": 2800,
+      "sessions": 3850,
+      "severity": 2,
+      "dataQuality": "real",
+      "note": "LCP between 2500ms and 4000ms.",
+      "impactScore": 7700
+    },
+    {
+      "type": "high_bounce_page",
+      "path": "/products/wireless-earbuds-pro",
+      "value": 0.62,
+      "baseline": 0.44,
+      "sessions": 740,
+      "zScore": 9.86,
+      "severity": 2,
+      "dataQuality": "real",
+      "coOccurringOnPage": [
+        "low_conversion_page",
+        "poor_lcp"
+      ],
+      "impactScore": 1480
+    },
+    {
+      "type": "low_conversion_page",
+      "path": "/products/wireless-earbuds-pro",
+      "value": 0.008,
+      "baseline": 0.0177,
+      "sessions": 740,
+      "zScore": -2,
+      "severity": 2,
+      "dataQuality": "real",
+      "coOccurringOnPage": [
+        "high_bounce_page",
+        "poor_lcp"
+      ],
+      "impactScore": 1480
+    },
+    {
+      "type": "low_conversion_page",
+      "path": "/collections/all",
+      "value": 0.005,
+      "baseline": 0.0177,
+      "sessions": 620,
+      "zScore": -2.4,
+      "severity": 2,
+      "dataQuality": "real",
+      "coOccurringOnPage": [
+        "lcp_needs_improvement"
+      ],
+      "impactScore": 1240
+    },
+    {
+      "type": "lcp_needs_improvement",
+      "path": "/collections/all",
+      "value": 3100,
+      "sessions": 620,
+      "severity": 2,
+      "dataQuality": "real",
+      "note": "LCP between 2500ms and 4000ms.",
+      "coOccurringOnPage": [
+        "low_conversion_page"
+      ],
+      "impactScore": 1240
+    }
+  ]
+}
