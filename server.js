@@ -21,8 +21,9 @@ app.get("/health", (req, res) => {
     status: "ok",
     service: "ai-service",
     version: "2.0.0",
-    model: "llama-3.3-70b-versatile (via Groq)",
-    apiKeyConfigured: Boolean(process.env.GROQ_API_KEY),
+    provider: process.env.AI_PROVIDER || "groq",
+    model: process.env[`${(process.env.AI_PROVIDER || "groq").toUpperCase()}_MODEL`] || null,
+    promptStrategy: process.env.PROMPT_STRATEGY || "plain",
     timestamp: new Date().toISOString(),
   });
 });
